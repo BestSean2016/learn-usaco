@@ -1,0 +1,65 @@
+/*
+ID: stonegu1
+PROG: beads
+LANG: C++11
+*/
+#include <iostream>
+#include <fstream>
+#include <vector>
+
+using namespace std;
+static string necklace = "";
+
+int pickup(int dir, int pos, int n) {
+    char now_color;
+    int spos, epos;
+    if (dir > 0)
+        now_color = necklace[pos], spos = pos + 1, epos = pos + n;
+    else
+        now_color = necklace[pos - 1], spos = pos - 2, epos = pos - n;
+
+    int len = 1;
+    for(int p = spos;
+            ((dir > 0 && p < epos)
+            || (dir < 0 && p > epos));
+            p += dir, ++len) {
+        char c = necklace[p];
+        if (c != now_color) {
+            if (now_color == 'w')
+                now_color = c;
+            else if (c != 'w')
+                break;
+        }
+    }
+    return len;
+}
+
+
+int collect(int pos, int n) {
+    int len = pickup(1, pos, n);
+    len += pickup(-1, pos, n);
+
+    return (len > n) ? n : len;
+}
+
+int main() {
+    ofstream fout ("beads.out");
+    ifstream fin ("beads.in");
+
+    int n = 0;
+    fin >> n >> necklace;
+    necklace.append(necklace);
+    necklace.append(necklace);
+
+    int maxc = -1;
+    for (int i = n; i < 2 * n; ++i) {
+        //bool allsame = false;
+        maxc = max(maxc, collect(i, n));    //, allsame);
+        //if (allsame)
+        //    return n;
+    }
+
+    fout << maxc << endl;
+    
+    return 0;
+}

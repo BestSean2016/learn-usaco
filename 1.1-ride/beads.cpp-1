@@ -1,0 +1,115 @@
+/*
+ID: stonegu1
+PROG: beads
+LANG: C++11
+*/
+#include <iostream>
+#include <fstream>
+#include <vector>
+
+using namespace std;
+
+typedef enum COLOR_TYPE {
+    COLOR_TYPE_UNKNOW = -2,
+    COLOR_TYPE_BLUE = -1,
+    COLOR_TYPE_WHITE = 0,
+    COLOR_TYPE_RED   = 1,
+} COLOR_TYPE;
+
+typedef struct BEADS {
+    COLOR_TYPE color;
+    int        len;
+} BEADS;
+
+static string necklace = "";
+static vector<BEADS> beads;
+static string Color = "bwr";
+
+inline void output(ostream& out, int num) {
+    out << num << endl;
+}
+
+inline COLOR_TYPE color(char b) {
+    COLOR_TYPE c = COLOR_TYPE_UNKNOW;
+    switch(b) {
+    case 'b' :
+        c = COLOR_TYPE_BLUE;
+        break;
+    case 'r' :
+        c = COLOR_TYPE_RED;
+        break;
+    case 'w':
+        c = COLOR_TYPE_WHITE;
+        break;
+    }
+    return c;
+}
+
+bool not_same_next(COLOR_TYPE now_color, int p, int endpos) {
+    for (int i = p + 1; i < endpos; ++i) {
+        COLOR_TYPE c = color(necklace[i]);
+        if (c == COLOR_TYPE_WHITE)
+            continue;
+        else
+            return (c != now_color);
+    }
+    return false;
+}
+
+void collect(int pos, int n) {
+    BEADS b;
+
+    COLOR_TYPE now_color = color(necklace[pos]);
+    int num = 1;
+    for(int p = pos + 1; p < pos + n; ++p, ++num) {
+        COLOR_TYPE c = color(necklace[p]);
+        if (c != now_color) {
+            if (now_color == COLOR_TYPE_WHITE)
+                now_color = c;
+            else if (c != COLOR_TYPE_WHITE)// || not_same_next(now_color, p, pos + n))
+                break;
+        }
+    }
+
+    b.color = now_color;
+    b.len = (pos > 0 && now_color == beads[pos - 1].color) ? beads.back().len : num;
+    beads.push_back(b);
+}
+
+int max_collect(int n)
+{
+    for (int i = 0; i < n; ++i) {
+        //bool allsame = false;
+        collect(i, n);    //, allsame);
+        //if (allsame)
+        //    return n;
+    }
+
+    for (int i = 0; i < n; ++i) {
+        cout << i << " " << Color[beads[i].color + 1] << " " << beads[i].len << endl;
+    }
+    cout << endl;
+
+    int maxlen = (beads[0].color != beads[n - 1].color) ?
+                beads[0].len + beads[n - 1].len :
+                max(beads[0].len, beads[n - 1].len);
+    for (int i = 1; i < n; ++i) {
+        int len = (beads[i - 1].color != beads[i].color) ?
+                    beads[i - 1].len + beads[i].len :
+                    max(beads[i - 1].len, beads[i].len);
+        maxlen = max(maxlen, len);
+    }
+    return maxlen;
+}
+
+int main() {
+    ofstream fout ("beads.out");
+    ifstream fin ("beads.in");
+
+    int n = 0;
+    fin >> n >> necklace;
+    necklace.append(necklace);
+    output(fout, max_collect(n));
+    
+    return 0;
+}
