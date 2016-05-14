@@ -13,6 +13,12 @@ using namespace std;
 
 static int digits[10] = {0};
 
+static inline int get_last_digit(int* p) {
+    int q = (*p) % 10;
+    *p /= 10;
+    return q;
+}
+
 int main() {
     ofstream fout ("crypt1.out");
     ifstream fin ("crypt1.in");
