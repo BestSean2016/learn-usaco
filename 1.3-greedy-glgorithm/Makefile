@@ -6,7 +6,12 @@ CXXFLAGS=-g -O2 -Wall
 crypt1-1:	crypt1-1.cpp
 	$(CXX) $(CFLAGS) -o $@ crypt1-1.cpp
 
-all:	crypt1-1
+crypt1-2:	crypt1-2.cpp
+	$(CXX) $(CXXFLAGS) -o $@ crypt1-2.cpp
+
+target=crypt1-1 crypt1-2
+
+all:	$(target)
 
 clean:
-	rm -f crypt1-1 *.out
+	rm -f $(target) *.out
