@@ -1,0 +1,90 @@
+/*
+ID: stonegu1
+LANG: C++11
+PROG: combo
+*/
+
+#include <stdio.h>
+#include <set>
+#include <string>
+#include <iostream>
+#include <fstream>
+
+typedef unsigned char uint8_t;
+
+class combination {
+public:
+    uint8_t n1;
+    uint8_t n2;
+    uint8_t n3;
+
+    combination(int a, int b, int c) : n1(a), n2(b), n3(c) {}
+};
+
+bool operator < (const combination& c1, const combination& c2) {
+    if (c1.n1 != c2.n1) return (c1.n1 < c2.n1);
+    else if (c1.n2 != c2.n2) return (c1.n2 < c2.n2);
+    else if (c1.n3 != c2.n3) return (c1.n3 < c2.n3);
+    else return false;
+}
+
+static int N = 0;
+static int d[6] = {-1};
+static std::set<combination> s;
+
+static inline int get_num(int a) {
+    if (a < 0)
+        return a % N + N;
+    else if (a == 0)
+        return N;
+    else if (a > N)
+        if ((a - N) % N == 0)
+            return N;
+        else
+            return (a - N) % N;
+    else
+        return a;
+}
+
+static void generate_combination(int b) {
+    for (int i = -2; i <= 2; ++i) {
+        for (int j = -2; j <= 2; ++j) {
+            for (int k = -2; k <= 2; ++k) {
+                combination c(get_num(d[b + 0] + i),
+                              get_num(d[b + 1] + j),
+                              get_num(d[b + 2] + k));
+                s.insert(c);
+            }
+        }
+    }
+}
+
+// static void test(int K) {
+//     for (int i = 1; i <= K; ++i) {
+//         std::cout << i;
+//         for (int j = -2; j <= 2; ++j)
+//             std::cout << '\t' << j << " => " << get_num(i + j) << ", ";
+//         std::cout << std::endl;
+//     }
+// }
+//
+// static void unit_test() {
+//     N = 1; std::cout << "N = 1:\n"; test(N);
+//     N = 2; std::cout << "N = 2:\n"; test(N);
+//     N = 3; std::cout << "N = 3:\n"; test(N);
+//     N = 4; std::cout << "N = 4:\n"; test(N);
+//     N = 5; std::cout << "N = 5:\n"; test(N);
+//     N = 6; std::cout << "N = 6:\n"; test(N);
+// }
+
+int main(void) {
+    std::ifstream in("combo.in");
+    std::ofstream out("combo.out");
+
+    in >> N >> d[0] >> d[1] >> d[2] >> d[3] >> d[4] >> d[5];
+    generate_combination(0);
+    generate_combination(3);
+    out << s.size() << std::endl;
+
+    return 0;
+}
