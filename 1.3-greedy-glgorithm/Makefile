@@ -3,7 +3,7 @@ CXX=g++
 CFLAGS=-g -O2 -Wall
 CXXFLAGS=-g -O2 -Wall -std=c++11
 
-targets=crypt1-1 crypt1 combo
+targets=crypt1-1 crypt1 combo wormhole
 
 .PHONY: all
 
@@ -17,6 +17,9 @@ crypt1:	crypt1.c
 
 combo:	combo.cpp
 	$(CXX) $(CXXFLAGS) -o $@ combo.cpp
+
+wormhole:	wormhole.cpp
+	$(CXX) $(CXXFLAGS) -o $@ wormhole.cpp
 
 .PHONY:clean
 
